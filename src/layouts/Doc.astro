@@ -1,55 +1,127 @@
 ---
-const { frontmatter } = Astro.props;
+const { frontmatter, headings = [] } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const nav = [
-  ['Overview', `${base}/`],
-  ['Brief', `${base}/brief/`],
-  ['ISA', `${base}/isa/`],
-  ['Rubric', `${base}/rubric/`],
-  ['Report template', `${base}/report-template/`],
+  ['Overview', `${base}/`, 'overview'],
+  ['Brief', `${base}/brief/`, 'brief'],
+  ['ISA', `${base}/isa/`, 'isa'],
+  ['Rubric', `${base}/rubric/`, 'rubric'],
+  ['Report template', `${base}/report-template/`, 'report'],
 ];
-const here = Astro.url.pathname;
+const here = Astro.url.pathname.replace(/\/$/, '');
+const outline = headings.filter((heading) => heading.depth === 2);
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#142d4a" />
     <title>{frontmatter.title} | SCSC1013 4-bit Adder Challenge</title>
   </head>
   <body>
-    <header>
-      <strong>SCSC1013 · 4-bit Adder Challenge</strong>
-      <nav>
-        {nav.map(([label, href]) => (
-          <a href={href} aria-current={here === href ? 'page' : undefined}>{label}</a>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <aside class="sidebar">
+      <a class="brand" href={`${base}/`} aria-label="SCSC1013 overview">
+        <span class="chip" aria-hidden="true"><span>4</span></span>
+        <span><strong>SCSC1013</strong><span class="brand-subtitle">4-bit Adder Challenge</span></span>
+      </a>
+      <nav aria-label="Main navigation">
+        {nav.map(([label, href, icon]) => (
+          <a href={href} aria-current={here === href.replace(/\/$/, '') ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              {icon === 'overview' ? <path d="m3 10 9-7 9 7v10H3V10Zm6 10v-7h6v7" /> : icon === 'isa' ? <path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-2 20" /> : icon === 'rubric' ? <path d="M9 5H4v16h16V5h-5M9 3h6v5H9V3Zm-2 9 2 2 4-4m-2 8h6" /> : icon === 'report' ? <path d="M5 3h10l4 4v14H5V3Zm9 0v5h5M9 12h6m-6 4h6" /> : <path d="M4 4h7v16H4V4Zm7 0h9v16h-9M7 8h1m6 0h3m-3 4h3m-3 4h3" />}
+            </svg>
+            {label}
+          </a>
         ))}
       </nav>
-    </header>
-    <main><slot /></main>
-    <footer>
-      <a href="https://github.com/drMurtadha/scsc1013-4bit-cpu-project">Source on GitHub</a>
-    </footer>
+      <a class="source-link" href="https://github.com/drMurtadha/scsc1013-4bit-cpu-project">Source on GitHub <span aria-hidden="true">↗</span></a>
+      <div class="circuit" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><span>SCSC1013 <span class="separator">/</span> <strong>{frontmatter.title}</strong></span><span class="course-name">Computer System &amp; Organization</span></header>
+      <div class="document-layout">
+        <main id="content" tabindex="-1"><article class:list={[{ 'overview': frontmatter.title === 'Overview' }]}><slot /></article>
+          <footer><a href="https://github.com/drMurtadha/scsc1013-4bit-cpu-project">Source on GitHub <span aria-hidden="true">↗</span></a></footer>
+        </main>
+        {outline.length > 0 && <aside class="outline" aria-label="On this page"><strong>On this page</strong><nav aria-label="Section navigation">{outline.map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)}</nav></aside>}
+      </div>
+    </div>
   </body>
 </html>
 
 <style is:global>
-  :root { --bg:#fff; --fg:#1d2433; --muted:#5b6475; --line:#dde1ea; --accent:#0b5cad; --code:#f3f5f9; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg:#12151c; --fg:#e6e9f0; --muted:#9aa3b5; --line:#2a303d; --accent:#6db3ff; --code:#1b202b; }
-  }
-  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,sans-serif; }
-  header { display:flex; flex-wrap:wrap; gap:.5rem 1.5rem; align-items:center; padding:.75rem 1rem; border-bottom:1px solid var(--line); }
-  nav { display:flex; flex-wrap:wrap; gap:1rem; }
-  nav a { color:var(--muted); text-decoration:none; }
-  nav a[aria-current] { color:var(--accent); font-weight:600; }
-  main, footer { max-width:60rem; margin:0 auto; padding:1rem; }
-  a { color:var(--accent); }
-  table { border-collapse:collapse; display:block; overflow-x:auto; }
-  th, td { border:1px solid var(--line); padding:.35rem .6rem; text-align:left; vertical-align:top; }
-  code { background:var(--code); padding:.1em .3em; border-radius:3px; }
-  pre { background:var(--code); padding:1rem; overflow-x:auto; }
-  pre code { padding:0; }
-  blockquote { margin:1rem 0; padding:.1rem 1rem; border-left:3px solid var(--line); color:var(--muted); }
-  footer { color:var(--muted); font-size:.9rem; }
+  :root { color-scheme:light; --bg:#f5f7fb; --paper:#fff; --fg:#24364b; --muted:#65748a; --line:#e3e9f1; --accent:#165ec5; --code:#edf2f8; --navy:#142d4a; font-family:'Avenir Next',Avenir,'Segoe UI',sans-serif; }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; scroll-padding-top:35px; }
+  body { margin:0; background:var(--bg); color:var(--fg); font-size:15px; line-height:1.8; -webkit-font-smoothing:antialiased; }
+  a { color:var(--accent); text-underline-offset:3px; }
+  a:hover { text-decoration:none; }
+  a:focus-visible, main:focus-visible { outline:3px solid #559bf0; outline-offset:3px; border-radius:3px; }
+  .sidebar a:focus-visible, .skip-link:focus-visible { outline-color:#fff; }
+  .skip-link { position:fixed; left:20px; top:-100px; z-index:20; background:white; padding:8px 18px; }
+  .skip-link:focus { top:12px; }
+  .sidebar { position:fixed; inset:0 auto 0 0; width:264px; padding:36px 22px; background:var(--navy); color:#fff; display:flex; flex-direction:column; overflow:hidden; }
+  .brand { display:flex; gap:15px; align-items:center; color:inherit; text-decoration:none; margin:0 7px 48px; }
+  .brand strong { display:block; font-size:19px; letter-spacing:.02em; }
+  .brand-subtitle { display:block; color:#b5c7db; font-size:11px; white-space:nowrap; }
+  .chip { width:41px; height:41px; border:1px solid #6589b0; border-radius:9px; display:grid; place-items:center; flex-shrink:0; box-shadow:0 0 0 4px #ffffff08; }
+  .chip span { font:600 24px/1 ui-monospace,monospace; color:#9ac9ff; }
+  .sidebar nav { display:grid; gap:7px; }
+  .sidebar nav a { display:flex; gap:13px; align-items:center; padding:11px 15px; border-radius:7px; text-decoration:none; color:#bacbdf; font-size:14px; }
+  .sidebar nav a:hover { background:#ffffff0c; color:white; }
+  .sidebar nav a[aria-current] { color:white; background:#28517e; box-shadow:inset 3px 0 #79b6ff; font-weight:600; }
+  .sidebar svg { width:19px; height:19px; flex-shrink:0; }
+  .source-link { margin:auto 15px 0; padding-top:40px; color:#b5c7db; text-decoration:none; font-size:12px; display:flex; justify-content:space-between; z-index:1; }
+  .circuit { position:absolute; bottom:80px; left:42px; width:180px; height:135px; opacity:.12; transform:rotate(-10deg); pointer-events:none; }
+  .circuit i { display:block; width:100%; height:25px; border-top:1px solid #a4d0ff; border-right:1px solid #a4d0ff; margin-top:8px; border-radius:0 15px 0 0; }
+  .workspace { margin-left:264px; }
+  .topbar { min-height:79px; padding:0 45px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:20px; background:#ffffffb3; font-size:12px; color:var(--muted); }
+  .topbar strong { color:var(--fg); font-weight:500; }
+  .separator { margin:0 13px; color:#acb9c9; }
+  .course-name { font-size:11px; }
+  .document-layout { max-width:1370px; margin:auto; padding:48px 44px 28px; display:grid; grid-template-columns:minmax(0, 830px) minmax(150px, 210px); gap:35px; align-items:start; }
+  main { min-width:0; outline:none; }
+  article { background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:42px 44px; box-shadow:0 5px 20px #233f6503; overflow-wrap:anywhere; }
+  h1,h2,h3,h4 { color:#17324f; line-height:1.3; font-weight:650; }
+  h1 { font-size:clamp(28px,2.6vw,39px); letter-spacing:-.035em; margin:0 0 29px; padding-bottom:27px; border-bottom:1px solid var(--line); text-wrap:balance; }
+  h2 { font-size:23px; letter-spacing:-.025em; margin:38px 0 16px; scroll-margin-top:30px; }
+  h3 { font-size:18px; margin-top:29px; }
+  p { margin:0 0 18px; }
+  strong { font-weight:650; }
+  li { padding-left:5px; margin:8px 0; }
+  ul,ol { padding-left:23px; }
+  li > p { margin-bottom:9px; }
+  blockquote { margin:22px 0; padding:15px 20px; border-left:3px solid #4f8bdc; border-radius:0 6px 6px 0; color:#375b82; background:#f0f6ff; }
+  blockquote p { margin:0; }
+  table { width:100%; border-collapse:separate; border-spacing:0; display:block; overflow-x:auto; margin:21px 0 28px; font-size:13px; border:1px solid var(--line); border-radius:7px; }
+  th,td { padding:12px 15px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+  th { background:#eef3fa; color:#3a526d; font-weight:600; }
+  tr:last-child td { border-bottom:0; }
+  tbody tr:nth-child(even) { background:#fafbfd; }
+  td:first-child { white-space:nowrap; }
+  code { font: .85em/1.6 'SFMono-Regular',Consolas,monospace; background:var(--code); padding:.2em .4em; border-radius:4px; }
+  a code { color:var(--accent); }
+  pre { background:#142d4a !important; padding:22px; border-radius:8px; overflow-x:auto; font-size:13px; }
+  pre code { background:none; padding:0; }
+  hr { border:0; border-top:1px solid var(--line); margin:35px 0; }
+  .outline { position:sticky; top:36px; font-size:12px; padding:16px 0; }
+  .outline > strong { display:block; color:#233e5c; margin-bottom:15px; font-size:12px; }
+  .outline nav { display:grid; border-left:1px solid #dce4ef; }
+  .outline a { color:var(--muted); padding:7px 0 7px 17px; text-decoration:none; line-height:1.5; }
+  .outline a:hover { color:var(--accent); border-left:2px solid var(--accent); margin-left:-1px; padding-left:16px; }
+  .doc-meta { display:grid; grid-template-columns:max-content minmax(0,1fr); gap:0; margin:0 0 8px; border:1px solid var(--line); border-radius:8px; overflow:hidden; font-size:14px; }
+  .doc-meta dt, .doc-meta dd { margin:0; padding:10px 16px; border-bottom:1px solid var(--line); }
+  .doc-meta dt { background:#eef3fa; color:#3a526d; font-weight:650; }
+  .doc-meta dd:last-of-type, .doc-meta dt:nth-last-of-type(1) { border-bottom:0; }
+  .key-statement { padding:22px 24px; background:#eef5ff; border:1px solid #d6e6fc; border-left:4px solid #4f8bdc; border-radius:8px; color:#244f7e; font-size:1.07em; }
+  .quiet { font-size:13px; color:var(--muted); }
+  footer { padding:23px 2px; font-size:12px; }
+  footer a { color:var(--muted); text-decoration:none; }
+  @media(min-width:1550px) { .document-layout { padding-top:64px; gap:45px; } }
+  @media(max-width:1150px) { .sidebar { width:235px; padding-inline:17px; } .workspace { margin-left:235px; } .document-layout { grid-template-columns:minmax(0,1fr); padding:30px; } .outline { display:none; } .course-name { display:none; } }
+  @media(max-width:720px) { .doc-meta { grid-template-columns:1fr; } .doc-meta dt { border-bottom:0; padding-bottom:2px; } .doc-meta dd { padding-top:2px; } .sidebar { position:static; width:auto; padding:20px 18px 12px; } .brand { margin:0 5px 20px; } .brand-subtitle { font-size:12px; } .sidebar nav { display:flex; gap:5px; overflow-x:auto; padding-bottom:5px; } .sidebar nav a { white-space:nowrap; font-size:12px; padding:9px 12px; } .sidebar svg { display:none; } .source-link,.circuit { display:none; } .workspace { margin-left:0; } .topbar { min-height:53px; padding:0 22px; } .document-layout { padding:20px 12px; } article { padding:27px 22px; border-radius:9px; } h1 { font-size:29px; } h2 { font-size:21px; } body { font-size:14px; } th,td { padding:10px 12px; } }
+  @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+  @media print { .sidebar,.topbar,.outline,footer { display:none; } .workspace { margin:0; } .document-layout { display:block; padding:0; } article { border:0; box-shadow:none; padding:0; } }
 </style>
