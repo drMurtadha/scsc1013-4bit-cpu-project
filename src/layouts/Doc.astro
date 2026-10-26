@@ -1,0 +1,55 @@
+---
+const { frontmatter } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const nav = [
+  ['Overview', `${base}/`],
+  ['Brief', `${base}/brief/`],
+  ['ISA', `${base}/isa/`],
+  ['Rubric', `${base}/rubric/`],
+  ['Report template', `${base}/report-template/`],
+];
+const here = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{frontmatter.title} | SCSC1013 4-bit Adder Challenge</title>
+  </head>
+  <body>
+    <header>
+      <strong>SCSC1013 · 4-bit Adder Challenge</strong>
+      <nav>
+        {nav.map(([label, href]) => (
+          <a href={href} aria-current={here === href ? 'page' : undefined}>{label}</a>
+        ))}
+      </nav>
+    </header>
+    <main><slot /></main>
+    <footer>
+      <a href="https://github.com/drMurtadha/scsc1013-4bit-cpu-project">Source on GitHub</a>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root { --bg:#fff; --fg:#1d2433; --muted:#5b6475; --line:#dde1ea; --accent:#0b5cad; --code:#f3f5f9; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12151c; --fg:#e6e9f0; --muted:#9aa3b5; --line:#2a303d; --accent:#6db3ff; --code:#1b202b; }
+  }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,sans-serif; }
+  header { display:flex; flex-wrap:wrap; gap:.5rem 1.5rem; align-items:center; padding:.75rem 1rem; border-bottom:1px solid var(--line); }
+  nav { display:flex; flex-wrap:wrap; gap:1rem; }
+  nav a { color:var(--muted); text-decoration:none; }
+  nav a[aria-current] { color:var(--accent); font-weight:600; }
+  main, footer { max-width:60rem; margin:0 auto; padding:1rem; }
+  a { color:var(--accent); }
+  table { border-collapse:collapse; display:block; overflow-x:auto; }
+  th, td { border:1px solid var(--line); padding:.35rem .6rem; text-align:left; vertical-align:top; }
+  code { background:var(--code); padding:.1em .3em; border-radius:3px; }
+  pre { background:var(--code); padding:1rem; overflow-x:auto; }
+  pre code { padding:0; }
+  blockquote { margin:1rem 0; padding:.1rem 1rem; border-left:3px solid var(--line); color:var(--muted); }
+  footer { color:var(--muted); font-size:.9rem; }
+</style>

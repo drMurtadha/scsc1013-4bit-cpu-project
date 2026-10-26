@@ -3,3 +3,8 @@ lecturer-only*/
 *answer_key*
 *SOLUTION*
 .DS_Store
+node_modules/
+dist/
+.astro/
+src/pages/
+public/*.csv
