@@ -1,0 +1,5 @@
+# Lecturer material must never be committed to this repository
+lecturer-only*/
+*answer_key*
+*SOLUTION*
+.DS_Store

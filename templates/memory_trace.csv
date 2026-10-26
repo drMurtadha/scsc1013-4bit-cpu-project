@@ -1,0 +1,4 @@
+access_no,type(I=fetch/R=read/W=write),address_hex,bank_LOI_2banks,cfg_a_4x1_hit_or_miss,cfg_b_2x2_hit_or_miss,cfg_c_4x2_hit_or_miss
+1,I,0,,,,
+2,,,,,,
+3,,,,,,
