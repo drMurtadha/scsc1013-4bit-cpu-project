@@ -6,6 +6,7 @@ const pages = [
   { src: 'README.md', slug: 'index', title: 'Overview' },
   { src: 'PROJECT_BRIEF.md', slug: 'brief', title: 'Project Brief' },
   { src: 'ISA_REFERENCE.md', slug: 'isa', title: 'ISA Reference' },
+  { src: 'COURSE_MAP.md', slug: 'course-map', title: 'Course Map' },
   { src: 'RUBRIC.md', slug: 'rubric', title: 'Rubric' },
   { src: 'templates/REPORT_TEMPLATE.md', slug: 'report-template', title: 'Report Template' },
 ];

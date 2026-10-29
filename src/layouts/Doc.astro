@@ -4,6 +4,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const nav = [
   ['Overview', `${base}/`, 'overview'],
   ['Brief', `${base}/brief/`, 'brief'],
+  ['Course map', `${base}/course-map/`, 'map'],
   ['ISA', `${base}/isa/`, 'isa'],
   ['Rubric', `${base}/rubric/`, 'rubric'],
   ['Report template', `${base}/report-template/`, 'report'],
@@ -30,7 +31,7 @@ const outline = headings.filter((heading) => heading.depth === 2);
         {nav.map(([label, href, icon]) => (
           <a href={href} aria-current={here === href.replace(/\/$/, '') ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-              {icon === 'overview' ? <path d="m3 10 9-7 9 7v10H3V10Zm6 10v-7h6v7" /> : icon === 'isa' ? <path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-2 20" /> : icon === 'rubric' ? <path d="M9 5H4v16h16V5h-5M9 3h6v5H9V3Zm-2 9 2 2 4-4m-2 8h6" /> : icon === 'report' ? <path d="M5 3h10l4 4v14H5V3Zm9 0v5h5M9 12h6m-6 4h6" /> : <path d="M4 4h7v16H4V4Zm7 0h9v16h-9M7 8h1m6 0h3m-3 4h3m-3 4h3" />}
+              {icon === 'overview' ? <path d="m3 10 9-7 9 7v10H3V10Zm6 10v-7h6v7" /> : icon === 'map' ? <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14" /> : icon === 'isa' ? <path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-13-2 20" /> : icon === 'rubric' ? <path d="M9 5H4v16h16V5h-5M9 3h6v5H9V3Zm-2 9 2 2 4-4m-2 8h6" /> : icon === 'report' ? <path d="M5 3h10l4 4v14H5V3Zm9 0v5h5M9 12h6m-6 4h6" /> : <path d="M4 4h7v16H4V4Zm7 0h9v16h-9M7 8h1m6 0h3m-3 4h3m-3 4h3" />}
             </svg>
             {label}
           </a>
